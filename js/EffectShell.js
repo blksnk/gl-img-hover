@@ -1,3 +1,6 @@
+const THREE = require('three')
+const { Vector2, Vector3, loadTexture, styleDomElements } = require('./helpers.js')
+
 class EffectShell {
   constructor(container = document.body, itemsWrapper = null, selector = '.link') {
     this.container = container
@@ -53,9 +56,11 @@ class EffectShell {
 
     // renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+
     this.renderer.setSize(this.viewport.width, this.viewport.height)
     this.renderer.setPixelRatio = window.devicePixelRatio
     this.container.appendChild(this.renderer.domElement)
+    styleDomElements(this.container, this.renderer.domElement)
 
     // scene
     this.scene = new THREE.Scene()
@@ -118,18 +123,17 @@ class EffectShell {
         this._onMouseOver.bind(this, index),
         false
       )
-
-      this.container.addEventListener(
-        'mousemove',
-        this._onMouseMove.bind(this),
-        false
-      )
-      this.itemsWrapper.addEventListener(
-        'mouseleave',
-        this._onMouseLeave.bind(this),
-        false
-      )
     })
+    this.itemsWrapper.addEventListener(
+      'mouseleave',
+      this._onMouseLeave.bind(this),
+      false
+    )
+    this.container.addEventListener(
+      'mousemove',
+      this._onMouseMove.bind(this),
+      false
+    )
   }
 
   _onMouseLeave(event) {
@@ -141,7 +145,6 @@ class EffectShell {
     // get normalized mouse position on viewport
     this.mouse.x = (event.clientX / this.viewport.width) * 2 - 1
     this.mouse.y = -(event.clientY / this.viewport.height) * 2 + 1
-
     this.onMouseMove(event)
   }
 
@@ -154,3 +157,5 @@ class EffectShell {
   onMouseMove() {}
   onMouseLeave() {}
 }
+
+module.exports = EffectShell

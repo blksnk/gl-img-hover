@@ -1,9 +1,11 @@
-class Effect extends EffectShell {
-  constructor(container = document.body, itemsWrapper = null, options = {}) {
+const THREE = require('three')
+const { TweenLite, Power4 } = require('gsap')
+const EffectShell = require('./EffectShell.js')
+const { Vector2, Vector3, mapNumber } = require('./helpers')
 
-    options.strength = options.strength || 0.75
-    options.selector = options.selector || '.link'
-    super(container, itemsWrapper, options.selector || null)
+class Effect extends EffectShell {
+  constructor(options) {
+    super(options.container, options.itemsWrapper, options.selector)
     this.options = options
 
     if (!this.container || !this.itemsWrapper) return
@@ -14,7 +16,11 @@ class Effect extends EffectShell {
   init() {
     this.position = Vector3(0, 0, 0)
     this.scale = Vector3(1, 1, 1)
-    this.geometry = new THREE.PlaneBufferGeometry(1, 1, 32, 32)
+    this.geometry = new THREE.PlaneBufferGeometry(
+      this.options.scale,
+      this.options.scale,
+      32,
+      32)
 
     this.uniforms = {
       uTexture: {
@@ -59,7 +65,7 @@ class Effect extends EffectShell {
         float center = 0.5;
         return ((uv - center) * scale) + center;
        }
- 
+
        void main() {
          vec3 color = texture2D(uTexture,scaleUV(vUv,0.7)).rgb;
          gl_FragColor = vec4(color,uAlpha);
@@ -76,18 +82,18 @@ class Effect extends EffectShell {
     if (!this.currentItem || !this.isMouseOver) {
       this.isMouseOver = true
       // show plane
-      TweenLite.to(this.uniforms.uAlpha, 0.5, {
+      TweenLite.to(this.uniforms.uAlpha, .3, {
         value: 1,
-        ease: Power4.easeOut
+        ease: Power4.easeOut,
       })
     }
   }
 
   onMouseLeave(event) {
     // hide plane
-    TweenLite.to(this.uniforms.uAlpha, 0.5, {
+    TweenLite.to(this.uniforms.uAlpha, .3, {
       value: 0,
-      ease: Power4.easeOut
+      ease: Power4.easeOut,
     })
   }
 
@@ -100,23 +106,26 @@ class Effect extends EffectShell {
   }
 
   onMouseMove(event) {
-    let x = this.mouse.x.map(
+    const { width, height } = this.viewSize
+    let x = mapNumber(
+      this.mouse.x,
       -1,
       1,
-      -this.viewSize.width / 2,
-      this.viewSize.width / 2
+      - width / 2,
+      width / 2
     )
-    let y = this.mouse.y.map(
+    let y = mapNumber(
+      this.mouse.y,
       -1,
       1,
-      -this.viewSize.height / 2,
-      this.viewSize.height / 2
+      - height / 2,
+      height / 2
     )
 
     this.position = Vector3(x, y, 0)
-    TweenLite.to(this.plane.position, 1, {
-      x: x,
-      y: y,
+    TweenLite.to(this.plane.position, .5, {
+      x,
+      y,
       ease: Power4.easeOut,
       onUpdate: this.onPositionUpdate.bind(this)
     })
@@ -125,6 +134,7 @@ class Effect extends EffectShell {
   onTargetChange(index) {
     this.currentItem = this.items[index]
     if (this.currentItem.texture) {
+
       this.uniforms.uTexture.value = this.currentItem.texture
 
       let imageRatio = this.currentItem.img.naturalWidth / this.currentItem.img.naturalHeight
@@ -143,3 +153,5 @@ class Effect extends EffectShell {
     this.uniforms.uOffset.value = offset
   }
 }
+
+module.exports = Effect

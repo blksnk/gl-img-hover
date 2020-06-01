@@ -1,0 +1,14 @@
+{
+  "name": "gl-img-hover",
+  "version": "0.0.1-0e1c5176",
+  "description": "image reveal effect on element hover",
+  "main": "main.js",
+  "repository": "https://github.com/blksnk/gl-img-hover.git",
+  "author": "blksnk <art.jnveigel@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "gsap": "^3.2.6",
+    "three": "^0.116.1"
+  }
+}
