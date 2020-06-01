@@ -1,9 +1,0 @@
-{
-  "version": "v1",
-  "packages": {
-    "gl-img-hover": {
-      "signature": "0e1c51768185b71e9798f271f1086820",
-      "file": true
-    }
-  }
-}

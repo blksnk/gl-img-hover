@@ -8,7 +8,6 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "gl-img-hover": "file:.yalc/gl-img-hover",
     "gsap": "^3.2.6",
     "three": "^0.116.1"
   }
